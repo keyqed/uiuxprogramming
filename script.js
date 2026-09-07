@@ -1,31 +1,36 @@
-const greetings = {
-  en: 'hello',
-  ko: '안녕하세요',
-  ja: 'こんにちは'
-};
+const greetings = [
+  { lang: 'en', text: 'hello' },
+  { lang: 'ko', text: '안녕하세요', compact: true },
+  { lang: 'ja', text: 'こんにちは', compact: true },
+  { lang: 'fr', text: 'bonjour', compact: true },
+  { lang: 'es', text: 'hola' },
+  { lang: 'de', text: 'hallo' },
+  { lang: 'it', text: 'ciao' },
+  { lang: 'pt', text: 'olá' },
+  { lang: 'zh', text: '你好' },
+  { lang: 'hi', text: 'नमस्ते', compact: true }
+];
 const heading = document.querySelector('h1');
-const greeting = document.querySelector('.greeting');
-const buttons = document.querySelectorAll('button[data-language]');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+let index = 0;
 let currentAnimation;
 
-buttons.forEach((button) => {
-  button.addEventListener('click', () => {
-    const language = button.dataset.language;
-    if (heading.dataset.language === language) return;
-    buttons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
-    heading.dataset.language = language;
-    heading.lang = language;
-    document.getElementById('hello').textContent = greetings[language];
-    if (!reducedMotion.matches && typeof greeting.animate === 'function') {
-      currentAnimation?.cancel();
-      currentAnimation = greeting.animate(
-        [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)' }],
-        { duration: 400, easing: 'cubic-bezier(.2,.7,.2,1)' }
-      );
-    }
-  });
-});
+setInterval(() => {
+  if (document.hidden) return;
+  index = (index + 1) % greetings.length;
+  const next = greetings[index];
+  heading.lang = next.lang;
+  heading.dataset.language = next.lang;
+  heading.classList.toggle('compact', Boolean(next.compact));
+  document.getElementById('hello').textContent = next.text;
+  if (!reducedMotion.matches && typeof heading.animate === 'function') {
+    currentAnimation?.cancel();
+    currentAnimation = heading.animate(
+      [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }],
+      { duration: 450, easing: 'cubic-bezier(.2,.7,.2,1)' }
+    );
+  }
+}, 3000);
 
 document.querySelector('.theme-toggle').addEventListener('click', (event) => {
   const isDark = document.body.classList.toggle('dark');

@@ -3,33 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="나의 첫 웹페이지.">
+  <meta name="description" content="세계의 인사말을 만나는 작은 언어 서비스 Hello입니다.">
   <meta name="theme-color" content="#000000">
-  <title>나의 첫 웹페이지.</title>
-  <link rel="stylesheet" href="style.css?v=3">
-  <script src="script.js?v=3" defer></script>
+  <title>Hello | 나의 첫 웹페이지</title>
+  <link rel="stylesheet" href="style.css?v=4">
+  <script src="script.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">본문으로 바로가기</a>
   <header class="global-nav">
     <nav class="nav-inner" aria-label="주요 메뉴">
-      <span class="wordmark">나의 첫 웹페이지.</span>
-      <div class="nav-actions">
-        <a class="github-link" href="https://github.com/keyqed/uiuxprogramming">GitHub <span aria-hidden="true">↗</span></a>
-        <button class="theme-toggle" type="button" aria-label="다크 모드" aria-pressed="false">
-          <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20.5 13.2A8.6 8.6 0 0 1 10.8 3.5 8.7 8.7 0 1 0 20.5 13.2Z"/></svg>
-          <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
-        </button>
+      <a class="wordmark" href="#main">나의 첫 웹페이지.</a>
+      <div class="nav-links">
+        <a href="#about">소개</a>
+        <a href="#features">기능</a>
+        <a href="#how">이용 방법</a>
+        <a href="#contact">연락</a>
       </div>
+      <button class="theme-toggle" type="button" aria-label="다크 모드" aria-pressed="false">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20.5 13.2A8.6 8.6 0 0 1 10.8 3.5 8.7 8.7 0 1 0 20.5 13.2Z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
+      </button>
     </nav>
   </header>
+
+  <!-- 사용 목적: 여러 언어의 인사말을 쉽고 즐겁게 접할 수 있도록 돕는다. -->
+  <!-- 핵심 행동: 사용자는 자동으로 바뀌는 인사말을 보거나 버튼을 눌러 다음 인사말을 확인한다. -->
+  <!-- 정보 순서: 서비스 이름과 한 줄 소개 → 서비스 소개 → 주요 기능 → 이용 방법 → 이미지 → 연락 영역 -->
   <main id="main">
-    <section class="hero" aria-label="인사">
+    <section class="hero" aria-labelledby="service-name">
+      <p class="service-label" id="service-name">Hello</p>
       <div class="greeting" aria-live="off">
         <h1 lang="en" data-language="en"><span id="hello">hello</span><span class="period">.</span></h1>
-        <p id="intro">나의 첫 웹페이지.</p>
+      </div>
+      <p class="hero-copy">세계의 인사를 3초마다 만나는 작은 언어 서비스.</p>
+      <button class="primary-button" id="next-greeting" type="button">다음 인사 보기</button>
+    </section>
+
+    <section class="section light" id="about" aria-labelledby="about-title">
+      <div class="section-inner two-column">
+        <p class="section-number">01</p>
+        <div>
+          <p class="eyebrow">서비스 소개</p>
+          <h2 id="about-title">한마디의 인사로<br>세계를 가깝게.</h2>
+          <p class="body-copy">Hello는 여러 나라의 인사말을 한 화면에서 보여주는 서비스입니다. 낯선 언어를 부담 없이 만나고, 짧은 표현부터 자연스럽게 익힐 수 있습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section subtle" id="features" aria-labelledby="features-title">
+      <div class="section-inner">
+        <p class="eyebrow">주요 기능</p>
+        <h2 id="features-title">가볍게 보고,<br>자연스럽게 기억해요.</h2>
+        <div class="feature-grid">
+          <article>
+            <span>01</span>
+            <h3>자동 인사</h3>
+            <p>10개 언어의 인사말이 3초마다 이어집니다.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>직접 넘기기</h3>
+            <p>원할 때 버튼을 눌러 다음 표현을 볼 수 있습니다.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>화면 전환</h3>
+            <p>밝은 화면과 어두운 화면을 자유롭게 선택합니다.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark-section" id="how" aria-labelledby="how-title">
+      <div class="section-inner">
+        <p class="eyebrow">이용 방법</p>
+        <h2 id="how-title">세 단계면 충분해요.</h2>
+        <ol class="steps">
+          <li><span>1</span><div><strong>인사말 보기</strong><p>화면 중앙의 인사말을 확인합니다.</p></div></li>
+          <li><span>2</span><div><strong>다음 인사 만나기</strong><p>잠시 기다리거나 버튼을 누릅니다.</p></div></li>
+          <li><span>3</span><div><strong>소리 내어 말하기</strong><p>표현을 따라 읽으며 기억합니다.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="visual-section" aria-label="서비스 이미지">
+      <img src="hello-world.svg" alt="파란 지구 주위에 여러 언어의 인사말이 떠 있는 모습">
+    </section>
+
+    <section class="section contact" id="contact" aria-labelledby="contact-title">
+      <div class="section-inner contact-inner">
+        <p class="eyebrow">연락</p>
+        <h2 id="contact-title">더 알고 싶다면.</h2>
+        <a class="primary-button link-button" href="https://github.com/keyqed/uiuxprogramming">GitHub에서 코드 보기 <span aria-hidden="true">↗</span></a>
       </div>
     </section>
   </main>
+
+  <footer>
+    <div class="footer-inner"><span>나의 첫 웹페이지.</span><a href="#main">맨 위로 ↑</a></div>
+  </footer>
 </body>
 </html>

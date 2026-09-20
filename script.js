@@ -10,19 +10,20 @@ const greetings = [
   { lang: 'zh', text: '你好' },
   { lang: 'hi', text: 'नमस्ते', compact: true }
 ];
+
 const heading = document.querySelector('h1');
+const hello = document.getElementById('hello');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 let index = 0;
 let currentAnimation;
 
-setInterval(() => {
-  if (document.hidden) return;
-  index = (index + 1) % greetings.length;
+function showGreeting(nextIndex) {
+  index = nextIndex % greetings.length;
   const next = greetings[index];
   heading.lang = next.lang;
   heading.dataset.language = next.lang;
   heading.classList.toggle('compact', Boolean(next.compact));
-  document.getElementById('hello').textContent = next.text;
+  hello.textContent = next.text;
   if (!reducedMotion.matches && typeof heading.animate === 'function') {
     currentAnimation?.cancel();
     currentAnimation = heading.animate(
@@ -30,9 +31,16 @@ setInterval(() => {
       { duration: 450, easing: 'cubic-bezier(.2,.7,.2,1)' }
     );
   }
+}
+
+setInterval(() => {
+  if (!document.hidden) showGreeting(index + 1);
 }, 3000);
+
+document.getElementById('next-greeting').addEventListener('click', () => showGreeting(index + 1));
 
 document.querySelector('.theme-toggle').addEventListener('click', (event) => {
   const isDark = document.body.classList.toggle('dark');
   event.currentTarget.setAttribute('aria-pressed', String(isDark));
+  event.currentTarget.setAttribute('aria-label', isDark ? '라이트 모드' : '다크 모드');
 });

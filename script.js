@@ -44,3 +44,8 @@ document.querySelector('.theme-toggle').addEventListener('click', (event) => {
   event.currentTarget.setAttribute('aria-pressed', String(isDark));
   event.currentTarget.setAttribute('aria-label', isDark ? '라이트 모드' : '다크 모드');
 });
+
+document.querySelector('.email-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  document.querySelector('.form-status').textContent = '올바른 이메일 형식입니다.';
+});

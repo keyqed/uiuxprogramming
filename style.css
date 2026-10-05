@@ -22,6 +22,8 @@ body { margin: 0; background: var(--canvas); color: var(--ink); font: 400 17px/1
 body.dark { color-scheme: dark; --canvas: #1d1d1f; --ink: #f5f5f7; --muted: #a1a1a6; --subtle: #272729; --blue: #2997ff; --blue-dark: #0077cc; --hairline: rgba(255,255,255,.16); }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+input { font: inherit; }
+img { max-width: 100%; height: auto; }
 p, h2, h3, strong { word-break: keep-all; overflow-wrap: anywhere; }
 
 .global-nav { position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(255,255,255,.14); background: rgba(0, 0, 0, .9); color: var(--nav-text); backdrop-filter: saturate(180%) blur(20px); }
@@ -49,7 +51,7 @@ h1[data-language="hi"] { letter-spacing: 0; }
 .section { padding: clamp(80px, 9vw, 120px) 24px; border-top: 1px solid var(--hairline); }
 .light { background: var(--canvas); }
 .subtle { background: var(--subtle); }
-.section-inner { width: min(980px, 100%); margin: auto; }
+.section-inner { width: 100%; max-width: 980px; margin: auto; }
 .two-column { display: grid; grid-template-columns: 1fr 3fr; gap: 40px; }
 .section-number { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
 .eyebrow { margin: 0 0 16px; color: var(--blue); font-size: 14px; font-weight: 600; }
@@ -72,9 +74,16 @@ h2 { margin: 0; font: 600 clamp(36px, 5.2vw, 64px)/1.2 var(--display); letter-sp
 .steps p { margin: 6px 0 0; color: #a1a1a6; }
 
 .visual-section { min-height: 640px; display: grid; place-items: center; overflow: hidden; border-top: 1px solid var(--hairline); background: #f5f5f7; }
-.visual-section img { display: block; width: min(980px, 92vw); height: auto; }
+.visual-section img { display: block; width: 92%; max-width: 980px; height: auto; }
 .contact { text-align: center; }
 .contact-inner { display: flex; flex-direction: column; align-items: center; }
+.email-form { display: flex; gap: 12px; width: 100%; max-width: 560px; margin-top: 36px; }
+.email-form input { flex: 1; min-width: 0; min-height: 52px; padding: 12px 18px; border: 1px solid var(--hairline); border-radius: 12px; background: var(--canvas); color: var(--ink); }
+.email-form input::placeholder { color: var(--muted); opacity: 1; }
+.email-form .primary-button { flex-shrink: 0; }
+.form-status { width: 100%; max-width: 560px; margin: 0; color: var(--muted); font-size: 14px; }
+.form-status:not(:empty) { margin-top: 16px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 .link-button { display: inline-flex; align-items: center; gap: 10px; margin-top: 36px; }
 
 footer { padding: 24px; background: var(--subtle); color: var(--muted); }
@@ -85,13 +94,14 @@ footer { padding: 24px; background: var(--subtle); color: var(--muted); }
 .skip-link:focus { top: 8px; }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
 
-@media (max-width: 760px) {
-  html { scroll-padding-top: 108px; }
+@media (max-width: 768px) {
+  html { scroll-padding-top: 20px; }
+  .global-nav { position: relative; }
   .nav-inner { width: calc(100% - 32px); height: auto; grid-template-columns: 1fr auto; }
-  .nav-links { grid-column: 1 / -1; grid-row: 2; justify-content: space-between; gap: 8px; border-top: 1px solid rgba(255,255,255,.14); }
-  .nav-links a { justify-content: center; flex: 1; }
+  .nav-links { grid-column: 1 / -1; grid-row: 2; flex-direction: column; align-items: stretch; gap: 0; border-top: 1px solid rgba(255,255,255,.14); padding-block: 4px 8px; }
+  .nav-links a { justify-content: center; }
   .theme-toggle { grid-column: 2; grid-row: 1; }
-  .hero { min-height: calc(100svh - 89px); padding: 72px 20px; }
+  .hero { min-height: max(460px, calc(100svh - 237px)); padding: 64px 20px; }
   h1 { min-height: 150px; font-size: min(25vw, 150px); }
   h1.compact { font-size: min(12vw, 72px); }
   .hero-copy { max-width: 340px; }
@@ -103,6 +113,9 @@ footer { padding: 24px; background: var(--subtle); color: var(--muted); }
   .steps li { grid-template-columns: 40px 1fr; }
   .steps strong { font-size: 24px; }
   .visual-section { min-height: 320px; padding-block: 32px; }
+  .email-form { flex-direction: column; }
+  .email-form input { flex: auto; width: 100%; }
+  .email-form .primary-button { width: 100%; min-height: 52px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

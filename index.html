@@ -6,8 +6,8 @@
   <meta name="description" content="세계의 인사말을 만나는 작은 언어 서비스 Hello입니다.">
   <meta name="theme-color" content="#000000">
   <title>Hello | 나의 첫 웹페이지</title>
-  <link rel="stylesheet" href="style.css?v=6">
-  <script src="script.js?v=4" defer></script>
+  <link rel="stylesheet" href="style.css?v=7">
+  <script src="script.js?v=7" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">본문으로 바로가기</a>
@@ -92,6 +92,12 @@
       <div class="section-inner contact-inner">
         <p class="eyebrow">연락</p>
         <h2 id="contact-title">더 알고 싶다면.</h2>
+        <form class="email-form">
+          <label class="visually-hidden" for="email">이메일 주소</label>
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="이메일 주소" required>
+          <button class="primary-button" type="submit">이메일 확인</button>
+        </form>
+        <p class="form-status" role="status"></p>
         <a class="primary-button link-button" href="https://github.com/keyqed/uiuxprogramming">GitHub에서 코드 보기</a>
       </div>
     </section>

@@ -11,16 +11,92 @@ const units = { seconds: { label: '초', multiplier: 1000, max: 59 }, minutes: {
 let selectedUnit = 'minutes';
 const status = document.getElementById('timer-status');
 const dial = document.querySelector('.duration-dial');
+const durationInput = document.getElementById('duration-value');
+const tabs = [...document.querySelectorAll('[role="tab"]')];
+const themeSelect = document.getElementById('theme-select');
+const soundSelect = document.getElementById('sound-select');
+const storageKey = 'focus.sessions.v1';
+let activeTab = 'timer';
 let dialDrag = null;
 const timeParts = { hours: 0, minutes: 5, seconds: 15 };
 const durationMs = () => Object.entries(timeParts).reduce((total, [unit, value]) => total + value * units[unit].multiplier, 0);
 let remaining = durationMs();
 let endsAt = 0;
 let state = 'idle';
-let completedSessions = 0;
-let focusedMs = 0;
+let sessionStartedAt = 0;
+let audioContext = null;
+const saved = readSaved();
+let sessions = saved.sessions;
+const settings = saved.settings;
 
-const orb = new FocusOrb(clock, () => ({ state, ratio: Math.max(0, (durationMs() ? remaining / durationMs() : 1)) }));
+function storageUnavailable() {
+  const notice = document.getElementById('storage-status');
+  notice.hidden = false;
+  notice.textContent = '기록을 저장할 수 없어요.';
+}
+
+function readSaved() {
+  const fallback = { sessions: [], settings: { theme: 'dark', sound: 'off' } };
+  try {
+    const data = JSON.parse(localStorage.getItem(storageKey));
+    if (!data || data.version !== 1) return fallback;
+    const unique = new Map();
+    if (Array.isArray(data.sessions)) data.sessions.forEach(session => {
+      if (typeof session.id === 'string' && Number.isFinite(session.duration) && session.duration > 0 &&
+          session.duration <= 86400000 && Number.isFinite(session.completedAt)) unique.set(session.id, session);
+    });
+    return {
+      sessions: [...unique.values()].sort((a, b) => b.completedAt - a.completedAt),
+      settings: {
+        theme: data.settings?.theme === 'light' ? 'light' : 'dark',
+        sound: data.settings?.sound === 'on' ? 'on' : 'off'
+      }
+    };
+  } catch {
+    storageUnavailable();
+    return fallback;
+  }
+}
+
+function saveRecords() {
+  try {
+    localStorage.setItem(storageKey, JSON.stringify({ version: 1, sessions, settings }));
+  } catch {
+    storageUnavailable();
+  }
+}
+
+function formatDuration(milliseconds) {
+  const total = Math.round(milliseconds / 1000);
+  const hours = Math.floor(total / 3600);
+  const minutes = Math.floor(total / 60) % 60;
+  const seconds = total % 60;
+  return [hours ? hours + '시간' : '', minutes ? minutes + '분' : '', seconds || !total ? seconds + '초' : ''].filter(Boolean).join(' ');
+}
+
+function renderRecords() {
+  const focusedMs = sessions.reduce((sum, session) => sum + session.duration, 0);
+  document.getElementById('session-count').textContent = sessions.length;
+  const recordUnit = focusedMs < 60000 ? units.seconds : focusedMs < 3600000 ? units.minutes : units.hours;
+  document.getElementById('focused-minutes').textContent = Math.round(focusedMs / recordUnit.multiplier * 10) / 10;
+  document.getElementById('focused-unit').textContent = recordUnit.label;
+  const list = document.getElementById('session-list');
+  list.replaceChildren();
+  sessions.forEach(session => {
+    const item = document.createElement('li');
+    const date = document.createElement('time');
+    date.dateTime = new Date(session.completedAt).toISOString();
+    date.textContent = new Intl.DateTimeFormat('ko-KR', {
+      timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
+    }).format(session.completedAt);
+    const duration = document.createElement('strong');
+    duration.textContent = formatDuration(session.duration);
+    item.append(date, duration);
+    list.append(item);
+  });
+}
+
+const orb = new FocusOrb(clock, () => ({ state, visible: activeTab === 'timer', ratio: Math.max(0, (durationMs() ? remaining / durationMs() : 1)) }));
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 function resetOrb() { orb.reset(); }
 function requestOrbFrame() { orb.request(); }
@@ -59,7 +135,11 @@ function setState(nextState) {
   dial.setAttribute('aria-valuemax', units[selectedUnit].max);
   dial.setAttribute('aria-valuetext', `${timeParts[selectedUnit]}${units[selectedUnit].label}`);
   dial.style.setProperty('--dial-angle', `${-135 + timeParts[selectedUnit] / units[selectedUnit].max * 270}deg`);
-  document.getElementById('dial-minutes').textContent = timeParts[selectedUnit];
+  durationInput.value = timeParts[selectedUnit];
+  durationInput.max = units[selectedUnit].max;
+  durationInput.disabled = running;
+  durationInput.setAttribute('aria-label', units[selectedUnit].label + ' 설정');
+  durationInput.removeAttribute('aria-invalid');
   document.getElementById('dial-unit').textContent = units[selectedUnit].label;
   document.querySelector('.control-deck').dataset.state = state;
   unitButtons.forEach((button) => {
@@ -72,14 +152,17 @@ function setState(nextState) {
 function completeSession() {
   if (state !== 'running') return;
   remaining = 0;
-  completedSessions += 1;
-  focusedMs += durationMs();
-  document.getElementById('session-count').textContent = completedSessions;
-  const recordUnit = focusedMs < 60000 ? units.seconds : focusedMs < 3600000 ? units.minutes : units.hours;
-  document.getElementById('focused-minutes').textContent = Math.round(focusedMs / recordUnit.multiplier * 10) / 10;
-  document.getElementById('focused-unit').textContent = recordUnit.label;
+  sessions.unshift({
+    id: crypto.randomUUID(),
+    duration: durationMs(),
+    startedAt: sessionStartedAt,
+    completedAt: Date.now()
+  });
+  saveRecords();
+  renderRecords();
   setState('completed');
   orb.finish();
+  playCompletionSound();
   renderTimer();
   announce(`${timeParts.hours}시간 ${timeParts.minutes}분 ${timeParts.seconds}초 집중 완료.`, 'success');
 }
@@ -102,8 +185,9 @@ function configureDuration(amount) {
 
 toggleButton.addEventListener('click', () => {
   if (durationMs() === 0) return;
-  refreshTimer();
   if (state === 'running') {
+    refreshTimer();
+    if (state !== 'running') return;
     setState('paused');
     announce('잠시 멈췄어요.');
     return;
@@ -112,6 +196,8 @@ toggleButton.addEventListener('click', () => {
     remaining = durationMs();
     resetOrb();
   }
+  if (state !== 'paused') sessionStartedAt = Date.now();
+  prepareAudio();
   endsAt = Date.now() + remaining;
   setState('running');
   renderTimer();
@@ -133,7 +219,7 @@ unitButtons.forEach(button => button.addEventListener('click', () => {
 }));
 
 function setDialAmount(amount) {
-  if (state === 'running') return;
+  if (state === 'running' || !Number.isFinite(amount)) return;
   const next = Math.max(0, Math.min(units[selectedUnit].max, Math.round(amount)));
   if (next !== timeParts[selectedUnit]) configureDuration(next);
 }
@@ -196,11 +282,93 @@ dial.addEventListener('wheel', event => {
 }, { passive: false });
 
 document.querySelector('.theme-toggle').addEventListener('click', (event) => {
-  const isDark = document.body.classList.toggle('dark');
-  event.currentTarget.setAttribute('aria-pressed', String(isDark));
-  event.currentTarget.setAttribute('aria-label', isDark ? '라이트 모드' : '다크 모드');
-  requestOrbFrame();
+  applyTheme(settings.theme === 'dark' ? 'light' : 'dark');
+  saveRecords();
 });
+
+durationInput.addEventListener('input', () => {
+  if (!durationInput.value) {
+    durationInput.setAttribute('aria-invalid', 'true');
+    toggleButton.disabled = true;
+    return;
+  }
+  setDialAmount(durationInput.valueAsNumber);
+  setState(state);
+});
+durationInput.addEventListener('change', () => {
+  if (durationInput.value) setDialAmount(durationInput.valueAsNumber);
+  setState(state);
+});
+
+function selectTab(tab, focus = false) {
+  activeTab = tab.id.replace('tab-', '');
+  tabs.forEach(button => {
+    const selected = button === tab;
+    button.setAttribute('aria-selected', String(selected));
+    button.tabIndex = selected ? 0 : -1;
+    document.getElementById(button.getAttribute('aria-controls')).hidden = !selected;
+  });
+  orb.fragmentCanvas.hidden = activeTab !== 'timer';
+  orb.last = 0;
+  if (activeTab === 'timer') orb.resize();
+  if (focus) tab.focus();
+}
+
+tabs.forEach((tab, index) => {
+  tab.addEventListener('click', () => selectTab(tab));
+  tab.addEventListener('keydown', event => {
+    const offsets = { ArrowRight: 1, ArrowLeft: -1 };
+    if (!(event.key in offsets) && event.key !== 'Home' && event.key !== 'End') return;
+    event.preventDefault();
+    const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + offsets[event.key] + tabs.length) % tabs.length;
+    selectTab(tabs[next], true);
+  });
+});
+
+function applyTheme(theme) {
+  settings.theme = theme;
+  const dark = theme === 'dark';
+  document.body.classList.toggle('dark', dark);
+  themeSelect.value = theme;
+  const button = document.querySelector('.theme-toggle');
+  button.setAttribute('aria-pressed', String(dark));
+  button.setAttribute('aria-label', dark ? '라이트 모드' : '다크 모드');
+  requestOrbFrame();
+}
+
+themeSelect.addEventListener('change', () => {
+  applyTheme(themeSelect.value);
+  saveRecords();
+});
+soundSelect.addEventListener('change', () => {
+  settings.sound = soundSelect.value;
+  prepareAudio();
+  saveRecords();
+});
+
+function prepareAudio() {
+  if (settings.sound !== 'on') return;
+  try {
+    audioContext ??= new AudioContext();
+    audioContext.resume().catch(() => {});
+  } catch {
+    audioContext = null;
+  }
+}
+
+function playCompletionSound() {
+  if (settings.sound !== 'on' || !audioContext || audioContext.state !== 'running') return;
+  const oscillator = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+  oscillator.frequency.value = 660;
+  gain.gain.setValueAtTime(0, audioContext.currentTime);
+  gain.gain.linearRampToValueAtTime(.08, audioContext.currentTime + .02);
+  gain.gain.exponentialRampToValueAtTime(.001, audioContext.currentTime + .45);
+  oscillator.connect(gain);
+  gain.connect(audioContext.destination);
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + .5);
+}
 
 setInterval(refreshTimer, 200);
 document.addEventListener('visibilitychange', () => {
@@ -210,3 +378,6 @@ document.addEventListener('visibilitychange', () => {
 });
 renderTimer();
 setState('idle');
+renderRecords();
+applyTheme(settings.theme);
+soundSelect.value = settings.sound;

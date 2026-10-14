@@ -161,6 +161,7 @@ class FocusOrb {
 
   draw(now) {
     const timer = this.getTimer();
+    if (timer.visible === false) { this.frame = 0; this.last = 0; return; }
     const dt = this.last?Math.max(0,(now-this.last)/1000):0;
     this.last = now;
     if (timer.state !== 'paused') this.time += dt;
@@ -208,7 +209,9 @@ class FocusOrb {
 
   request() { if(!this.frame) this.frame=requestAnimationFrame(time=>this.draw(time)); }
   resize() {
-    this.size=this.element.getBoundingClientRect().width;
+    const width=this.element.getBoundingClientRect().width;
+    if (!width) return;
+    this.size=width;
     const dpr=Math.min(devicePixelRatio||1,2);
     this.canvas.width=Math.round(this.size*dpr);this.canvas.height=Math.round(this.size*dpr);
     this.viewportWidth = document.documentElement.clientWidth;

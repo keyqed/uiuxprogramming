@@ -1,86 +1,84 @@
-<!DOCTYPE html>
-<html lang="ko">
+<!doctype html>
+<html lang="ko" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="지금 할 일 하나에 집중하는 타이머, Focus.">
-  <meta name="theme-color" content="#0e0c08">
-  <title>Focus | 집중 타이머</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&amp;icon_names=check,code,dark_mode,light_mode,pause,play_arrow,replay&amp;display=block">
-  <link rel="stylesheet" href="style.css?v=19">
-  <script src="orb.js?v=19" defer></script>
-  <script src="script.js?v=19" defer></script>
-</head>
-<body class="dark">
-  <a class="skip-link" href="#main">본문으로 바로가기</a>
-  <header class="global-nav">
-    <nav class="nav-inner" aria-label="주요 메뉴">
-      <a class="wordmark" href="#main">Focus<span>.</span></a>
-      <div class="nav-actions">
-      <a class="source-link" href="https://github.com/keyqed/uiuxprogramming" aria-label="GitHub 소스 코드"><span class="material-symbols-outlined" aria-hidden="true">code</span></a>
-      <button class="theme-toggle" type="button" aria-label="라이트 모드" aria-pressed="true">
-        <span class="material-symbols-outlined moon" aria-hidden="true">dark_mode</span>
-        <span class="material-symbols-outlined sun" aria-hidden="true">light_mode</span>
-      </button>
-      </div>
-    </nav>
-  </header>
-  <main id="main">
-    <div class="service-tabs" role="tablist" aria-label="Focus 메뉴">
-      <button id="tab-timer" type="button" role="tab" aria-selected="true" aria-controls="panel-timer" tabindex="0">타이머</button>
-      <button id="tab-records" type="button" role="tab" aria-selected="false" aria-controls="panel-records" tabindex="-1">기록</button>
-      <button id="tab-settings" type="button" role="tab" aria-selected="false" aria-controls="panel-settings" tabindex="-1">설정</button>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" type="image/png" href="assets/llnkkr.png">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+  <title>링클 - 단축링크</title>
+  <meta name="description" content="링클에서 가입 없이 URL을 단축하고 링크를 복사하세요. 광고 없이 목적지로 바로 연결됩니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="링클 - 단축링크">
+  <meta property="og:description" content="링클에서 가입 없이 URL을 단축하고 링크를 복사하세요. 광고 없이 목적지로 바로 연결됩니다.">
+  </head>
+<body data-page="home">
+<button id="homeThemeToggle" class="home-theme-toggle" type="button" aria-label="다크 모드" title="다크 모드"><span class="material-symbols-outlined" aria-hidden="true">dark_mode</span></button>
+<p class="support-notice"><span class="material-symbols-outlined" aria-hidden="true">shield</span><span data-i18n="supportNotice">이 사이트는 당신의 후원으로 운영됩니다. 감사합니다!</span></p>
+<main id="homeScene">
+  <h1><img src="assets/llnkkr-wordmark.svg" alt="링클" data-i18n-alt="brand"></h1>
+  <form id="shortenForm" autocomplete="off" novalidate>
+    <div class="link-input-wrap">
+    <input aria-describedby="message" id="targetUrl" name="llnkkr-destination" type="text" inputmode="url" maxlength="2048" placeholder="https://llnk.kr/paste_a_long_URL" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" aria-label="단축할 URL" data-i18n-aria="urlLabel" required>
+    <button id="linkSettingsButton" type="button" aria-label="설정" data-i18n-aria="settings" title="설정" data-i18n-title="settings" aria-haspopup="dialog"><span class="material-symbols-outlined" aria-hidden="true">tune</span></button>
     </div>
-    <section id="panel-timer" class="hero" role="tabpanel" aria-labelledby="tab-timer">
-      <div class="clock" data-state="idle">
-        <canvas class="clock-canvas" aria-hidden="true"></canvas>
-        <div class="clock-center">
-          <h1 id="timer-display" class="has-hours" role="timer" aria-live="off" aria-label="남은 시간 0시간 5분 15초"><span id="timer-hours">00</span><span id="hour-colon" class="clock-colon">:</span><span id="timer-minutes">05</span><span class="clock-colon">:</span><span id="timer-seconds">15</span></h1>
-          <span class="visually-hidden" id="clock-state-text">READY</span>
-        </div>
-        <span class="material-symbols-outlined clock-complete" aria-hidden="true">check</span>
-      </div>
-      <div class="control-deck">
-        <div class="hardware-controls">
-          <button class="secondary-button hardware-button" id="timer-reset" type="button" aria-label="타이머 초기화"><span class="material-symbols-outlined" aria-hidden="true">replay</span></button>
-          <div class="dial-shell">
-            <div class="dial-scale" aria-hidden="true"></div>
-            <div class="duration-dial" role="slider" tabindex="0" aria-label="집중 시간 다이얼" aria-valuemin="0" aria-valuemax="59" aria-valuenow="5" aria-valuetext="5분">
-              <div class="dial-grip" aria-hidden="true"></div>
-              <div class="dial-face" aria-hidden="true"><span class="dial-indicator"></span></div>
-            </div>
-            <div class="dial-value"><input id="duration-value" type="number" min="0" max="59" value="5" inputmode="numeric" aria-label="분 설정"><small id="dial-unit">분</small></div>
-          </div>
-          <button class="primary-button hardware-button" id="timer-toggle" type="button"><span class="material-symbols-outlined" id="toggle-icon" aria-hidden="true">play_arrow</span><span class="visually-hidden" id="toggle-label">집중 시작</span></button>
-        </div>
-        <div class="time-settings">
-          <div class="duration-presets" role="group" aria-label="시간 단위">
-            <button type="button" data-unit="seconds" aria-pressed="false">초</button>
-            <button type="button" data-unit="minutes" aria-pressed="true">분</button>
-            <button type="button" data-unit="hours" aria-pressed="false">시</button>
-          </div>
-        </div>
-      </div>
-      <p id="timer-status" class="timer-status" role="status" aria-live="polite"></p>
-    </section>
-    <section id="panel-records" class="secondary-panel" role="tabpanel" aria-labelledby="tab-records" hidden>
-      <div class="panel-card records-card">
-      <h2>집중 기록</h2>
-      <div class="session-summary" role="group" aria-label="저장된 집중 기록">
-        <div><span>완료한 세션</span><strong><span id="session-count">0</span><small>회</small></strong></div>
-        <div><span>집중한 시간</span><strong><span id="focused-minutes">0</span><small id="focused-unit">분</small></strong></div>
-      </div>
-      <ol id="session-list" class="session-list" aria-label="완료한 집중 세션"></ol>
-      </div>
-    </section>
-    <section id="panel-settings" class="secondary-panel" role="tabpanel" aria-labelledby="tab-settings" hidden>
-      <div class="panel-card settings-card">
-        <h2>설정</h2>
-        <label class="setting-row" for="theme-select"><span>화면</span><select id="theme-select"><option value="dark">다크</option><option value="light">라이트</option></select></label>
-        <label class="setting-row" for="sound-select"><span>완료 알림</span><select id="sound-select"><option value="off">소리 없음</option><option value="on">짧은 알림음</option></select></label>
-      </div>
-    </section>
-    <p id="storage-status" class="storage-status" role="status" hidden></p>
-  </main>
+    <button id="submitButton" type="submit" aria-label="링크 확인" data-i18n-aria="review" title="링크 확인" data-i18n-title="review" aria-haspopup="dialog">
+      <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+    </button>
+  </form>
+  <div id="result" class="result">
+    <a id="shortUrl" target="_blank" rel="noopener noreferrer"></a>
+    <button id="copyButton" class="copy" type="button" aria-label="링크 복사" data-i18n-aria="copy" title="링크 복사" data-i18n-title="copy"><span class="material-symbols-outlined" aria-hidden="true">content_copy</span></button>
+  </div>
+  <div id="message" class="message" role="status" aria-live="polite"></div>
+  <button id="restartLink" class="flow-secondary" type="button" data-i18n="restart" hidden>다시 시작</button>
+</main>
+<a class="extension-link" href="https://chromewebstore.google.com/detail/dccgmckjnbeoidpbckbgmbikhnkipalk" target="_blank" rel="noopener noreferrer" aria-label="Chrome 확장 프로그램 (새 탭에서 열기)" data-i18n-aria="chromeExtensionOpen" title="Chrome 확장 프로그램 (새 탭에서 열기)" data-i18n-title="chromeExtensionOpen"><span class="material-symbols-outlined" aria-hidden="true">extension</span><span data-i18n="chromeExtension">Chrome 확장 프로그램</span></a>
+<dialog id="linkReviewDialog" aria-labelledby="linkReviewTitle" aria-describedby="linkReviewHint">
+  <div class="link-settings-head"><h2 id="linkReviewTitle" data-i18n="review">링크 확인</h2><button id="closeLinkReview" type="button" aria-label="입력으로 돌아가기" data-i18n-aria="closeReview">×</button></div>
+  <p id="linkReviewHint" class="review-hint" data-i18n="reviewHint">주소와 설정을 확인한 뒤 단축해 주세요.</p>
+  <dl class="link-review-summary">
+    <div><dt data-i18n="urlLabel">단축할 URL</dt><dd id="reviewUrl" dir="ltr"></dd></div>
+    <div><dt data-i18n="expiry">잔여 유효 기간</dt><dd id="reviewExpiry"></dd></div>
+    <div><dt data-i18n="maxUses">최대 사용 횟수</dt><dd id="reviewMaxUses"></dd></div>
+  </dl>
+  <div class="link-review-actions"><button id="editLink" class="flow-secondary" type="button" data-i18n="edit">수정</button><button id="confirmLink" type="button" data-i18n="shorten">단축하기</button></div>
+</dialog>
+<dialog id="linkSettingsDialog" aria-labelledby="linkSettingsTitle">
+  <div class="link-settings-head"><h2 id="linkSettingsTitle" data-i18n="settings">설정</h2><button id="closeLinkSettings" type="button" aria-label="설정 닫기" data-i18n-aria="close">×</button></div>
+  <fieldset class="link-settings-field"><legend data-i18n="expiry">잔여 유효 기간</legend>
+    <div class="setting-options expiry-options" role="radiogroup" aria-label="잔여 유효 기간" data-i18n-aria="expiry" data-setting="expires_in">
+      <button type="button" role="radio" aria-checked="false" tabindex="-1" data-value="1800"><span data-i18n="expiry30m">30분</span></button>
+      <button type="button" role="radio" aria-checked="false" tabindex="-1" data-value="3600"><span data-i18n="expiry1h">1시간</span></button>
+      <button type="button" role="radio" aria-checked="false" tabindex="-1" data-value="21600"><span data-i18n="expiry6h">6시간</span></button>
+      <button type="button" role="radio" aria-checked="false" tabindex="-1" data-value="43200"><span data-i18n="expiry12h">12시간</span></button>
+      <button type="button" role="radio" aria-checked="false" tabindex="-1" data-value="86400"><span data-i18n="expiry1d">1일</span></button>
+      <button type="button" role="radio" aria-checked="false" tabindex="-1" data-value="604800"><span data-i18n="expiry7d">7일</span></button>
+      <button type="button" role="radio" aria-checked="false" tabindex="-1" data-value="2592000"><span data-i18n="expiry30d">30일</span></button>
+      <button type="button" role="radio" aria-checked="true" tabindex="0" data-value="0"><span data-i18n="expiryNone">만료 기간 없음</span></button>
+    </div>
+  </fieldset>
+  <fieldset class="link-settings-field"><legend data-i18n="maxUses">최대 사용 횟수</legend>
+    <div class="setting-options use-options" role="radiogroup" aria-label="최대 사용 횟수" data-i18n-aria="maxUses" data-setting="max_uses">
+      <button type="button" role="radio" aria-checked="true" tabindex="0" data-value="0"><span data-i18n="usesNone">제한 없음</span></button>
+      <button type="button" role="radio" aria-checked="false" tabindex="-1" data-value="1"><span data-i18n="uses1">1회</span></button>
+      <button type="button" role="radio" aria-checked="false" tabindex="-1" data-value="5"><span data-i18n="uses5">5회</span></button>
+      <button type="button" role="radio" aria-checked="false" tabindex="-1" data-value="10"><span data-i18n="uses10">10회</span></button>
+      <button type="button" role="radio" aria-checked="false" tabindex="-1" data-value="25"><span data-i18n="uses25">25회</span></button>
+      <button type="button" role="radio" aria-checked="false" tabindex="-1" data-value="50"><span data-i18n="uses50">50회</span></button>
+      <button type="button" role="radio" aria-checked="false" tabindex="-1" data-value="100"><span data-i18n="uses100">100회</span></button>
+    </div>
+  </fieldset>
+  <button id="applyLinkSettings" type="button"><span data-i18n="apply">적용</span></button>
+  <fieldset class="language-field"><legend data-i18n="language">언어</legend>
+    <div class="language-options" role="group" aria-label="언어" data-i18n-aria="language">
+      <button type="button" data-language="en" aria-pressed="false"><span lang="en">English</span></button>
+      <button type="button" data-language="ko" aria-pressed="true"><span lang="ko">한국어</span></button>
+    </div>
+  </fieldset>
+</dialog>
+<script id="homeMessages" type="application/json">{"ko":{"pageTitle":"링클 - 단축링크","description":"링클에서 가입 없이 URL을 단축하고 링크를 복사하세요. 광고 없이 목적지로 바로 연결됩니다.","brand":"링클","coffee":"커피 사주기","supportNotice":"이 사이트는 당신의 후원으로 운영됩니다. 감사합니다!","chromeExtension":"Chrome 확장 프로그램","chromeExtensionOpen":"Chrome 확장 프로그램 (새 탭에서 열기)","settings":"설정","close":"설정 닫기","urlLabel":"단축할 URL","shorten":"단축하기","copy":"링크 복사","copiedLabel":"복사됨","expiry":"잔여 유효 기간","maxUses":"최대 사용 횟수","expiry30m":"30분","expiry1h":"1시간","expiry6h":"6시간","expiry12h":"12시간","expiry1d":"1일","expiry7d":"7일","expiry30d":"30일","expiryNone":"만료 기간 없음","usesNone":"제한 없음","uses1":"1회","uses5":"5회","uses10":"10회","uses25":"25회","uses50":"50회","uses100":"100회","apply":"적용","language":"언어","errorUnavailable":"만료되었거나 사용할 수 없는 링크입니다.","errorEmpty":"URL을 입력해 주세요.","errorUrl":"올바른 URL을 입력해 주세요.","errorScheme":"HTTP와 HTTPS 주소만 지원합니다.","errorCreate":"단축링크를 만들지 못했습니다.","errorRequest":"요청을 처리하지 못했습니다.","errorCopy":"링크를 복사하지 못했습니다.","copied":"단축링크를 만들고 복사했습니다.","created":"단축링크를 만들었습니다. 복사 버튼을 눌러 주세요.","darkMode":"다크 모드","lightMode":"라이트 모드","browseShorteners":"단축링크 서비스 둘러보기","errorTimeout":"응답을 확인하지 못했습니다. 잠시 후 다시 시도해 주세요.","errorResponse":"서버의 응답을 확인하지 못했습니다. 잠시 후 다시 시도해 주세요.","errorLength":"URL은 2,048바이트 이하로 입력해 주세요.","errorCredentials":"로그인 정보가 포함되지 않은 URL을 입력해 주세요.","processing":"단축링크를 만들고 있습니다.","retryAfter":"{seconds}초 후 다시 시도해 주세요.","review":"링크 확인","reviewHint":"주소와 설정을 확인한 뒤 단축해 주세요.","edit":"수정","restart":"다시 시작","closeReview":"입력으로 돌아가기","reviewChanged":"입력이나 설정이 바뀌었습니다. 다시 확인해 주세요."},"en":{"pageTitle":"LLNKKR - URL Shortener","description":"Shorten and copy links with LLNKKR. No signup or ads.","brand":"LLNKKR","coffee":"Buy me a coffee","supportNotice":"This site is supported by your donations. Thank you!","chromeExtension":"Chrome extension","chromeExtensionOpen":"Chrome extension (opens in a new tab)","settings":"Settings","close":"Close settings","urlLabel":"URL to shorten","shorten":"Shorten link","copy":"Copy link","copiedLabel":"Copied","expiry":"Expires after","maxUses":"Maximum uses","expiry30m":"30 minutes","expiry1h":"1 hour","expiry6h":"6 hours","expiry12h":"12 hours","expiry1d":"1 day","expiry7d":"7 days","expiry30d":"30 days","expiryNone":"No expiration","usesNone":"Unlimited","uses1":"1 use","uses5":"5 uses","uses10":"10 uses","uses25":"25 uses","uses50":"50 uses","uses100":"100 uses","apply":"Apply","language":"Language","errorUnavailable":"This link has expired or is unavailable.","errorEmpty":"Enter a URL.","errorUrl":"Enter a valid URL.","errorScheme":"Only HTTP and HTTPS links are supported.","errorCreate":"Could not shorten the link.","errorRequest":"Could not process the request.","errorCopy":"Could not copy the link.","copied":"Short link created and copied.","created":"Link created. Use the copy button to copy it.","darkMode":"Dark mode","lightMode":"Light mode","browseShorteners":"Browse URL shorteners","errorTimeout":"Could not confirm the response. Try again shortly.","errorResponse":"Could not read the server response. Try again shortly.","errorLength":"Enter a URL of 2,048 bytes or fewer.","errorCredentials":"Enter a URL without embedded login details.","processing":"Creating your short link.","retryAfter":"Try again in {seconds} seconds.","review":"Review link","reviewHint":"Check the URL and settings before shortening.","edit":"Edit","restart":"Start over","closeReview":"Return to input","reviewChanged":"The URL or settings changed. Review them again."},"errors":{"단축 링크 설정을 확인해 주세요.":"Check the link settings.","허용되지 않은 요청 출처입니다.":"This request origin is not allowed.","POST 요청만 지원합니다.":"Only POST requests are supported.","올바른 URL을 입력해 주세요.":"Enter a valid URL.","http 또는 https URL만 사용할 수 있습니다.":"Only HTTP and HTTPS links are supported.","안전한 http 또는 https URL만 사용할 수 있습니다.":"Enter an HTTP or HTTPS URL without embedded credentials.","이미 LlNK.kr로 단축된 링크는 다시 단축할 수 없습니다.":"This link is already shortened with LLNKKR.","내부 네트워크 주소는 줄일 수 없습니다.":"Internal network addresses cannot be shortened.","내부 또는 예약 IP 주소는 줄일 수 없습니다.":"Private or reserved IP addresses cannot be shortened.","짧은 주소를 만들지 못했습니다.":"Could not create a short URL.","요청이 너무 빠릅니다. 잠시 후 다시 시도해 주세요.":"Too many requests. Try again shortly.","단축링크를 만들지 못했습니다.":"Could not shorten the link.","요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.":"Too many requests. Try again shortly."}}</script>
+<a class="coffee-link" href="https://www.buymeacoffee.com/llnkkr" target="_blank" rel="noopener noreferrer" aria-label="커피 사주기" data-i18n-aria="coffee" title="커피 사주기" data-i18n-title="coffee"><img src="assets/coffee-cup.svg" alt="" width="36" height="36"></a>
 </body>
 </html>

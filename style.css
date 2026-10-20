@@ -1,4 +1,4 @@
-@font-face{font-family:"Material Symbols Outlined";font-style:normal;font-weight:600;font-display:block;src:url("assets/material-symbols.ttf") format("truetype")}
+@font-face{font-family:"Material Symbols Outlined";font-style:normal;font-weight:600;font-display:block;src:url("assets/material-symbols-full.ttf") format("truetype")}
 
 :root{
   color-scheme:dark;
@@ -100,7 +100,7 @@ input::placeholder{color:var(--muted);opacity:1}
     @media(max-width:340px){body{padding-right:12px;padding-left:12px}form{padding:10px}h1 img{width:146px}}
     @media(max-height:520px) and (max-width:900px){body{place-items:start center;padding-top:88px}}
     @media(prefers-reduced-motion:reduce){h1,form,form input,form #submitButton{animation:none!important;transition:none!important}button,.extension-link{transition:none!important}}
-
+  
 .link-input-wrap{position:relative;flex:1;min-width:0;height:44px}
 .link-input-wrap input{display:block;width:100%;padding-right:48px}
 #linkSettingsButton{position:absolute;top:0;right:0;display:grid;width:44px;height:44px;padding:0;place-items:center;color:var(--muted);border:0;border-radius:6px;background:none;box-shadow:none;transform:none}
@@ -172,6 +172,24 @@ input::placeholder{color:var(--muted);opacity:1}
 #submitButton[aria-busy=true] .material-symbols-outlined{animation:llnk-request-pulse .8s ease-in-out infinite alternate}
 @keyframes llnk-request-pulse{to{opacity:.35}}
 @media(prefers-reduced-motion:reduce){#submitButton[aria-busy=true] .material-symbols-outlined{animation:none}.coffee-link{transition:none}}
+
+html[data-navigation-direction]::view-transition-old(root),html[data-navigation-direction]::view-transition-new(root){animation-duration:620ms;animation-timing-function:cubic-bezier(.22,.8,.22,1);mix-blend-mode:normal}
+html[data-navigation-direction=down]::view-transition-old(root){animation-name:llnk-page-out-up}
+html[data-navigation-direction=down]::view-transition-new(root){animation-name:llnk-page-in-up}
+html[data-navigation-direction=up]::view-transition-old(root){animation-name:llnk-page-out-down}
+html[data-navigation-direction=up]::view-transition-new(root){animation-name:llnk-page-in-down}
+@keyframes llnk-page-out-up{to{transform:translateY(-100vh)}}
+@keyframes llnk-page-in-up{from{transform:translateY(100vh)}}
+@keyframes llnk-page-out-down{to{transform:translateY(100vh)}}
+@keyframes llnk-page-in-down{from{transform:translateY(-100vh)}}
+.directory-entry{position:fixed;z-index:3;bottom:calc(26px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:grid;place-items:center;width:40px;height:40px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--muted);text-decoration:none;transition:color 140ms ease,border-color 140ms ease}
+.directory-entry:hover,.directory-entry:focus-visible{color:var(--text);border-color:var(--line-strong)}
+.directory-entry:focus-visible{outline:2px solid var(--brand);outline-offset:4px}
+.navigation-error{position:fixed;z-index:999;bottom:88px;left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);padding:12px 16px;border:2px solid var(--line);border-radius:6px;background:var(--surface);color:var(--text);font:13px/1.5 system-ui,sans-serif;box-shadow:3px 3px 0 var(--shadow)}
+@media(max-width:520px){.directory-entry{bottom:calc(80px + env(safe-area-inset-bottom))}}
+@media(prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none!important}.directory-entry{transition:none}}
+.directory-chrome~main[tabindex="-1"]:focus,body[data-page=home] main[tabindex="-1"]:focus{outline:none}
+body[data-page=directory] #bmc-wbtn{display:none!important}
 
 .flow-secondary{--button-edge:var(--line);--button-face:var(--surface);--button-shadow:var(--line);color:var(--text);font-weight:600}
 #restartLink{height:32px;padding:0 12px;font-size:12px}

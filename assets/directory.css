@@ -341,3 +341,57 @@ html[data-navigation-direction=up]::view-transition-new(root){animation-name:lln
 @media(prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none!important}.directory-entry{transition:none}}
 .directory-chrome~main[tabindex="-1"]:focus,body[data-page=home] main[tabindex="-1"]:focus{outline:none}
 body[data-page=directory] #bmc-wbtn{display:none!important}
+
+#reportDialog{width:min(520px,calc(100% - 32px));--report-error:#B6432C}
+:root[data-theme=dark] #reportDialog{--report-error:#FF9A82}
+#reportDialog .dialog-heading{padding:20px 22px;gap:12px}
+#reportDialog .dialog-heading h2{font-size:17px;gap:12px}
+.report-title-icon{color:var(--brand)}
+.report-heading-actions{display:flex;align-items:center;gap:12px}
+.report-local{display:flex;color:var(--muted)}
+.report-local .icon{font-size:18px;width:18px;height:18px}
+#reportDialog .report-heading-actions .icon-button{width:34px;height:34px;min-height:34px}
+#reportForm .dialog-scroll{display:grid;gap:20px;padding:22px;scrollbar-gutter:auto}
+#reportForm .report-mode{display:grid;grid-template-columns:1fr 1fr;gap:10px;border:0;padding:0;margin:0 0 2px;min-width:0}
+#reportForm .report-mode-option{position:relative;display:flex;flex-direction:row;justify-content:center;align-items:center;gap:9px;min-height:46px;padding:10px 12px;border:2px solid var(--control-edge);border-radius:6px;box-shadow:3px 3px 0 var(--control-edge);background:var(--control-face);color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;transition:background .14s,box-shadow .14s,transform .14s}
+#reportForm .report-mode-option input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer;box-shadow:none;border:0;padding:0}
+#reportForm .report-mode-option:hover{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--control-edge);background:var(--control-hover)}
+#reportForm .report-mode-option:has(input:checked){color:var(--selected-text);border-color:var(--selected-edge);background:var(--selected-face);box-shadow:3px 3px 0 var(--selected-shadow)}
+#reportForm .report-mode-option:has(input:focus-visible){outline:2px solid var(--brand);outline-offset:4px}
+#reportForm .report-mode-option:has(input:disabled){opacity:.5;cursor:wait}
+#reportForm .report-field{display:grid;gap:8px;min-width:0}
+.report-field-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:18px}
+#reportForm .report-field-heading label{display:block;margin:0;color:var(--text);font-size:12px;font-weight:650}
+.report-count{font-size:10px;letter-spacing:.3px;color:var(--muted);font-variant-numeric:tabular-nums;line-height:1.2}
+.report-field-meta{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex:none}
+.report-rule{padding:3px 6px;border:1px solid var(--line-strong);border-radius:4px;color:var(--muted);font-size:10px;line-height:1.2;font-variant-numeric:tabular-nums;white-space:nowrap}
+#reportForm .report-control{display:flex;align-items:center;gap:12px;padding:0 13px;min-height:52px;background:var(--field);border:2px solid var(--control-edge);border-radius:6px;box-shadow:3px 3px 0 var(--control-edge);transition:border-color .14s,box-shadow .14s}
+#reportForm .report-control:hover{border-color:var(--line-strong)}
+#reportForm .report-control:focus-within{border-color:var(--brand);box-shadow:3px 3px 0 var(--brand)}
+#reportForm .report-control .report-field-icon{color:var(--muted);font-size:20px;width:20px;height:20px}
+#reportForm .report-control:focus-within .report-field-icon{color:var(--brand)}
+#reportForm .report-control input,#reportForm .report-control textarea{display:block;flex:1;min-width:0;width:100%;height:48px;min-height:0;margin:0;padding:0;background:transparent;border:0;border-radius:0;box-shadow:none;color:var(--text);font:inherit;font-size:14px;outline:0}
+#reportForm .report-control input::placeholder{color:var(--muted);opacity:.65}
+#reportForm .report-control textarea{height:92px;max-height:220px;padding:13px 0;resize:vertical;line-height:1.6}
+#reportForm .report-control-note{align-items:flex-start}
+#reportForm .report-control-note>.icon{margin-top:15px}
+.report-state{color:var(--brand);width:18px;height:18px;font-size:18px}
+#reportForm .report-field.is-valid .report-count{color:var(--brand)}
+#reportForm .report-field.is-invalid .report-control{border-color:var(--report-error);box-shadow:3px 3px 0 var(--report-error)}
+#reportForm .report-field.is-invalid :is(.report-state,.report-count){color:var(--report-error)}
+#reportForm .report-error{display:flex;align-items:center;gap:5px;margin:0;color:var(--report-error);font-size:11px;line-height:1.4}
+#reportForm #reportCorrection{border:0;padding:0;margin:0;min-width:0}
+#reportForm .report-footer{display:grid;grid-template-columns:42px 1fr minmax(126px,1.05fr);align-items:center;gap:14px;padding:18px 22px 22px;background:var(--surface)}
+#reportForm .report-footer>.icon-button{width:42px;height:42px;min-height:42px}
+#reportForm .report-footer>#reportSubmit{width:100%;min-height:42px}
+#reportForm .report-feedback{display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;color:var(--muted)}
+#reportForm .report-feedback>.icon{font-size:18px;width:18px;height:18px}
+#reportForm #reportStatus{font-size:11px;line-height:1.3;margin:0;white-space:nowrap;font-variant-numeric:tabular-nums}
+#reportForm .report-feedback[data-state=success],#reportForm .report-feedback[data-state=ready]{color:var(--brand)}
+#reportForm .report-feedback[data-state=error]{color:var(--report-error)}
+#reportForm [aria-busy=true]{cursor:wait}
+#reportForm .is-loading .icon{animation:report-spin 1s linear infinite}
+.report-sr{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+@keyframes report-spin{to{transform:rotate(360deg)}}
+@media(max-width:520px){#reportDialog{width:calc(100% - 24px);max-width:calc(100% - 24px);max-height:calc(100dvh - 24px)}#reportDialog .dialog-heading{padding:16px 18px}#reportDialog .dialog-heading h2{font-size:16px}#reportForm .dialog-scroll{padding:18px;gap:17px}#reportForm .report-footer{padding:16px 18px 20px;gap:10px;grid-template-columns:42px 1fr minmax(112px,1.05fr)}#reportForm .report-control textarea{height:80px}}
+@media(prefers-reduced-motion:reduce){#reportForm .is-loading .icon{animation:none}}

@@ -1,3 +1,172 @@
+window.ringklInitReportForm = (pageBody, api, lang) => {
+  const $ = id => pageBody.querySelector('#' + id);
+  const form = $('reportForm');
+  const radios = [...form.querySelectorAll('[name="kind"]')];
+  const kind = () => radios.find(input => input.checked).value;
+  const extra = $('reportCorrection');
+  const status = $('reportStatus');
+  const feedback = $('reportFeedback');
+  const button = $('reportSubmit');
+  const reset = $('reportReset');
+  const fields = ['reportName', 'reportUrl', 'reportCurrent', 'reportNote'].map($);
+  const touched = new Set();
+  const text = lang === 'en' ? {
+    required: 'Required', name: '2–80 characters', note: '10–500 characters',
+    url: 'Use an HTTP(S) URL', credentials: 'Remove login details',
+    valid: 'Valid', fix: 'Check fields', saving: 'Saving', save: 'Save',
+    saved: 'Saved locally', failed: 'Not saved', done: 'Saved', retry: 'Retry', storage: 'Check storage',
+    addTitle: 'Suggest a service', editTitle: 'Correct information',
+    nameLabel: 'Service name', updatedNameLabel: 'Updated name', noteLabel: 'Suggestion', changesLabel: 'Changes'
+  } : {
+    required: '필수 입력', name: '2~80자로 입력', note: '10~500자로 입력',
+    url: 'HTTP(S) 주소 입력', credentials: '로그인 정보 제외',
+    valid: '입력 완료', fix: '입력 확인', saving: '저장 중', save: '저장',
+    saved: '저장 완료', failed: '저장 실패', done: '저장됨', retry: '다시 시도', storage: '저장 공간 확인',
+    addTitle: '서비스 제보', editTitle: '정보 수정',
+    nameLabel: '서비스 이름', updatedNameLabel: '수정 후 이름', noteLabel: '제보 내용', changesLabel: '수정 내용'
+  };
+  let busy = false;
+  let attempt = null;
+
+  function errorFor(field) {
+    if (field.disabled) return '';
+    const value = field.value.trim();
+    if (!value) return text.required;
+    if (field.id === 'reportUrl') {
+      try {
+        const url = new URL(value);
+        if (url.username || url.password) return text.credentials;
+        if (!['http:', 'https:'].includes(url.protocol) || !url.hostname || value.length > 500) return text.url;
+      } catch (_) { return text.url; }
+    } else if (field.id === 'reportNote') {
+      if (value.length < 10 || value.length > 500) return text.note;
+    } else if (value.length < 2 || value.length > 80) return text.name;
+    return '';
+  }
+
+  function paintField(field) {
+    const error = errorFor(field);
+    const invalid = !field.disabled && touched.has(field.id) && Boolean(error);
+    const valid = !field.disabled && !error;
+    const container = field.closest('.report-field');
+    field.setAttribute('aria-invalid', String(invalid));
+    container.classList.toggle('is-valid', valid);
+    container.classList.toggle('is-invalid', invalid);
+    const message = $(field.id + 'Error');
+    message.textContent = invalid ? error : '';
+    message.hidden = !invalid;
+    const state = $(field.id + 'State');
+    state.textContent = invalid ? 'error_outline' : 'check_circle';
+    state.hidden = !invalid && !valid;
+    state.setAttribute('aria-label', invalid ? error : text.valid);
+    const count = $(field.id + 'Count');
+    count.textContent = field.value.trim().length + ' / ' + field.maxLength;
+    count.hidden = !field.value.length && !touched.has(field.id) && document.activeElement !== field;
+    return !error;
+  }
+
+  function progress() {
+    const enabled = fields.filter(field => !field.disabled);
+    const ready = enabled.filter(field => !errorFor(field)).length;
+    feedback.dataset.state = ready === enabled.length ? 'ready' : 'idle';
+    $('reportStatusIcon').textContent = ready === enabled.length ? 'check_circle' : 'checklist';
+    status.textContent = ready + ' / ' + enabled.length;
+    $('reportSubmitIcon').textContent = 'save';
+    $('reportSubmitLabel').textContent = text.save;
+  }
+
+  function showStatus(state, message, icon) {
+    feedback.dataset.state = state;
+    status.textContent = message;
+    $('reportStatusIcon').textContent = icon;
+  }
+
+  function conditionalFields() {
+    const visible = kind() === 'correction';
+    extra.hidden = !visible;
+    extra.disabled = !visible;
+    $('reportCurrent').disabled = !visible;
+    $('reportTitleLabel').textContent = visible ? text.editTitle : text.addTitle;
+    $('reportTitle').querySelector('.icon').textContent = visible ? 'edit_square' : 'add_link';
+    $('reportNameLabel').textContent = visible ? text.updatedNameLabel : text.nameLabel;
+    $('reportNoteLabel').textContent = visible ? text.changesLabel : text.noteLabel;
+    if (!visible) touched.delete('reportCurrent');
+    paintField($('reportCurrent'));
+  }
+
+  function setBusy(value) {
+    busy = value;
+    button.disabled = value;
+    reset.disabled = value;
+    for (const field of [...radios, ...fields]) field.disabled = value || (field.id === 'reportCurrent' && kind() !== 'correction');
+    form.setAttribute('aria-busy', String(value));
+    $('reportSubmitIcon').textContent = value ? 'progress_activity' : 'save';
+    $('reportSubmitLabel').textContent = value ? text.saving : text.save;
+    button.classList.toggle('is-loading', value);
+  }
+
+  form.addEventListener('input', event => {
+    if (busy || !fields.includes(event.target)) return;
+    attempt = null;
+    paintField(event.target);
+    progress();
+  });
+  form.addEventListener('focusin', event => {
+    if (fields.includes(event.target)) paintField(event.target);
+  });
+  form.addEventListener('focusout', event => {
+    if (!fields.includes(event.target) || event.target.disabled) return;
+    if (event.target.value.trim()) touched.add(event.target.id);
+    paintField(event.target);
+  });
+  radios.forEach(radio => radio.addEventListener('change', () => {
+    conditionalFields();
+    attempt = null;
+    progress();
+  }));
+  form.addEventListener('reset', () => setTimeout(() => {
+    touched.clear(); attempt = null;
+    setBusy(false); conditionalFields(); fields.forEach(paintField); progress();
+    $('reportName').focus();
+  }, 0));
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (busy) return;
+    fields.filter(field => !field.disabled).forEach(field => touched.add(field.id));
+    const valid = fields.map(paintField).every(Boolean);
+    if (!valid) {
+      showStatus('error', text.fix, 'error_outline');
+      fields.find(field => !field.disabled && errorFor(field))?.focus();
+      return;
+    }
+    const data = new FormData(form);
+    const payload = Object.fromEntries([...data].map(([name, value]) => [name, String(value).trim()]));
+    const signature = JSON.stringify(payload);
+    if (!attempt || attempt.signature !== signature) attempt = {signature, id: crypto.randomUUID()};
+    setBusy(true);
+    showStatus('busy', text.saving, 'hourglass_top');
+    let success = false;
+    try {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      await api({action: 'report', request_id: attempt.id, ...payload});
+      success = true;
+      showStatus('success', text.saved, 'hard_drive');
+    } catch (error) {
+      showStatus('error', error?.message === 'storage_unavailable' ? text.storage : text.failed, 'error_outline');
+    } finally {
+      setBusy(false);
+      if (success) {
+        $('reportSubmitIcon').textContent = 'check';
+        $('reportSubmitLabel').textContent = text.done;
+      } else {
+        $('reportSubmitIcon').textContent = 'refresh';
+        $('reportSubmitLabel').textContent = text.retry;
+      }
+    }
+  });
+  conditionalFields(); fields.forEach(paintField); setBusy(false); progress();
+};
+
 (() => {
   'use strict';
   if (window.llnkPreferences) return;
@@ -1183,26 +1352,7 @@ function updateSettingsLabel() {
   }
   $('themeToggle').addEventListener('click',()=>window.llnkPreferences.setTheme(window.llnkPreferences.theme==='dark'?'light':'dark'));
   activeListen(document,'llnk:preferences',paintTheme);
-  let reportBusy=false,reportAttempt=null;
-  $('reportForm').addEventListener('input',()=>{if (!reportBusy) $('reportStatus').textContent='';});
-  $('reportForm').addEventListener('submit',async event=>{
-    event.preventDefault();if (reportBusy) return;
-    const form=event.currentTarget,data=new FormData(form),button=$('reportSubmit');
-    const fields={name:String(data.get('name') || '').trim(),url:String(data.get('url') || '').trim(),note:String(data.get('note') || '').trim()};
-    const signature=JSON.stringify(fields);
-    reportBusy=true;button.disabled=true;button.classList.add('is-loading');form.setAttribute('aria-busy','true');
-    $('reportSubmitIcon').textContent='progress_activity';$('reportSubmitLabel').textContent=t('reportSending');$('reportStatus').textContent='';
-    try {
-      if (!reportAttempt || reportAttempt.signature!==signature) reportAttempt={signature,id:Array.from(crypto.getRandomValues(new Uint8Array(16)),value=>value.toString(16).padStart(2,'0')).join('')};
-      await api({action:'report',request_id:reportAttempt.id,...fields});
-      form.reset();reportAttempt=null;$('reportStatus').textContent=t('reportSent');
-    } catch (error) {
-      $('reportStatus').textContent=t(error.message==='report_daily_limit'?'reportDailyLimit':error.code===429?'reportCooldown':error.code===422||error.code===409?'reportInvalid':'reportFailed');
-    } finally {
-      reportBusy=false;button.disabled=false;button.classList.remove('is-loading');form.removeAttribute('aria-busy');
-      $('reportSubmitIcon').textContent='send';$('reportSubmitLabel').textContent=t('sendReport');
-    }
-  });
+  window.ringklInitReportForm(pageBody, api, lang);
   let synchronizing=false;
   activeListen(document,'visibilitychange',async()=>{
     if (document.visibilityState!=='visible' || synchronizing || busy.size) return;

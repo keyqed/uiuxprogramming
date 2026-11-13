@@ -6,17 +6,22 @@
   <meta name="color-scheme" content="light dark">
   <link rel="icon" type="image/png" href="assets/llnkkr.png">
   <link rel="stylesheet" href="style.css">
-  <script src="script.js?v=20261106-form2" defer></script>
+  <script src="script.js?v=20261114-nav" defer></script>
   <title>링클 - 단축링크</title>
   <meta name="description" content="링클에서 가입 없이 URL을 단축하고 링크를 복사하세요. 광고 없이 목적지로 바로 연결됩니다.">
   <meta property="og:type" content="website">
   <meta property="og:title" content="링클 - 단축링크">
   <meta property="og:description" content="링클에서 가입 없이 URL을 단축하고 링크를 복사하세요. 광고 없이 목적지로 바로 연결됩니다.">
-  </head>
+  <link rel="stylesheet" href="assets/navigation.css?v=20261114">
+</head>
 <body data-page="home">
 <button id="homeThemeToggle" class="home-theme-toggle" type="button" aria-label="다크 모드" title="다크 모드"><span class="material-symbols-outlined" aria-hidden="true">dark_mode</span></button>
+<nav class="primary-navigation" aria-label="주요 메뉴">
+<button type="button" class="primary-menu-toggle" aria-controls="primaryMenu" aria-expanded="false"><span class="nav-icon" aria-hidden="true">menu</span><span class="nav-label">메뉴 열기</span></button>
+<ul id="primaryMenu"><li><a data-primary-link="create" href="#create" aria-current="page"><span class="nav-icon" aria-hidden="true">link</span><span class="nav-label">링크 만들기</span></a></li><li><a data-primary-link="catalog" href="shortener/#catalog"><span class="nav-icon" aria-hidden="true">travel_explore</span><span class="nav-label">서비스 찾기</span></a></li><li><a data-primary-link="guide" href="shortener/#guide"><span class="nav-icon" aria-hidden="true">info</span><span class="nav-label">이용 안내</span></a></li></ul>
+</nav>
 <p class="support-notice"><span class="material-symbols-outlined" aria-hidden="true">shield</span><span data-i18n="supportNotice">이 사이트는 당신의 후원으로 운영됩니다. 감사합니다!</span></p>
-<main id="homeScene">
+<main id="homeScene"><span id="create" tabindex="-1"></span>
   <h1><img src="assets/llnkkr-wordmark.svg" alt="링클" data-i18n-alt="brand"></h1>
   <form id="shortenForm" autocomplete="off" novalidate>
     <div class="link-input-wrap">

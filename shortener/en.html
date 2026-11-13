@@ -7,12 +7,13 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 
   <link rel="stylesheet" href="../assets/directory.css?v=20261106-form2">
-<script src="../script.js?v=20261106-form2" defer></script>
+<script src="../script.js?v=20261114-nav" defer></script>
 <title>Shortener | LLNKKR</title><meta name="description" content="Compare sign-in requirements, pricing and ads to find a URL shortener that fits.">
 
   <link rel="icon" href="../assets/llnkkr.png">
 
-  </head>
+  <link rel="stylesheet" href="../assets/navigation.css?v=20261114">
+</head>
 
 <body data-page="directory">
 
@@ -26,7 +27,12 @@
 
   <nav class="header-actions" aria-label="SERVICE DIRECTORY"><button class="icon-button" id="themeToggle" type="button" aria-label="Dark mode" title="Dark mode"><span class="icon" aria-hidden="true">dark_mode</span></button><button class="icon-button" data-dialog="languageDialog" type="button" aria-label="Language" title="Language"><span class="icon" aria-hidden="true">language</span></button><button class="icon-button" aria-label="Suggest a service / correction" title="Suggest a service / correction" data-dialog="reportDialog" type="button"><span class="icon" aria-hidden="true">add</span></button></nav>
 
-</div></header>
+</div>
+<nav class="primary-navigation" aria-label="Main menu">
+<button type="button" class="primary-menu-toggle" aria-controls="primaryMenu" aria-expanded="false"><span class="nav-icon" aria-hidden="true">menu</span><span class="nav-label">Open menu</span></button>
+<ul id="primaryMenu"><li><a data-primary-link="create" href="../#create"><span class="nav-icon" aria-hidden="true">link</span><span class="nav-label">Create a link</span></a></li><li><a data-primary-link="catalog" href="#catalog" aria-current="page"><span class="nav-icon" aria-hidden="true">travel_explore</span><span class="nav-label">Find a service</span></a></li><li><a data-primary-link="guide" href="#guide"><span class="nav-icon" aria-hidden="true">info</span><span class="nav-label">Guide</span></a></li></ul>
+</nav>
+</header>
 
 <div class="directory-controls">
 
@@ -64,7 +70,7 @@
 
   <div class="results-toolbar">
 
-  <div class="results-heading"><h1 id="resultsTitle">All services <span id="resultCount">344</span></h1></div>
+  <div class="results-heading"><h1 id="resultsTitle" aria-live="polite" aria-atomic="true">All services <span id="resultCount">344</span></h1></div>
 
     <div class="filter-strip" id="filterOptions" role="group" aria-label="Filters"><button type="button" data-quick="login" aria-pressed="false" aria-label="No account" title="No account"><span class="icon" aria-hidden="true">person_off</span><span class="quick-label">No account</span></button><button type="button" data-quick="free" aria-pressed="false" aria-label="Fully free" title="Fully free"><span class="icon" aria-hidden="true">money_off</span><span class="quick-label">Fully free</span></button><button type="button" data-quick="ads" aria-pressed="false" aria-label="No ads" title="No ads"><span class="icon" aria-hidden="true">block</span><span class="quick-label">No ads</span></button><div id="activeFilters" class="active-filters" hidden></div></div>
 
@@ -80,7 +86,7 @@
 
 <main>
 
-  <section class="results" aria-labelledby="resultsTitle">
+  <section id="catalog" class="results" aria-labelledby="resultsTitle">
 
     <ol id="serviceGrid" class="service-list ringcl-box">      <li class="service-row" data-id="bitly">
 
@@ -308,6 +314,13 @@
 
 
 
+<section id="guide" class="service-guide site-section-hidden" aria-labelledby="guideTitle" tabindex="-1">
+<h1 id="guideTitle">Find a shortener that fits</h1>
+<p>Compare account, pricing and advertising conditions before choosing a service.</p>
+<h2>Search and compare</h2><p>Search by name or domain. Categories narrow the purpose; the account-free, free and ad-free filters can be combined. Select a service name to see details.</p>
+<h2>Suggest a service or correction</h2><p>Use the + button at the top right. Suggestions are saved only in this browser, so they do not change the public catalog.</p>
+<a class="button" href="#catalog">Back to services</a>
+</section>
 </main>
 
 <dialog id="filterDialog" class="directory-dialog ringcl-box" aria-labelledby="filterTitle"><div class="dialog-heading"><h2 id="filterTitle"><span class="icon" aria-hidden="true">tune</span>Filters</h2><button type="button" class="icon-button" data-close aria-label="Close"><span class="icon" aria-hidden="true">close</span></button></div><form id="filterForm"><div class="dialog-scroll"><div class="filter-grid">

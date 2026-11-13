@@ -1,3 +1,52 @@
+(() => {
+  'use strict';
+  if (window.ringklInitNavigation) {window.ringklInitNavigation();return;}
+  const compact = matchMedia('(max-width: 600px)');
+  function paint() {
+    const nav = document.querySelector('.primary-navigation');
+    if (!nav) return;
+    const en = document.documentElement.lang === 'en';
+    const current = document.body.dataset.page === 'home' ? 'create' : location.hash === '#guide' ? 'guide' : 'catalog';
+    const labels = en ? {create:'Create a link',catalog:'Find a service',guide:'Guide'} : {create:'링크 만들기',catalog:'서비스 찾기',guide:'이용 안내'};
+    for (const link of nav.querySelectorAll('[data-primary-link]')) {
+      link.querySelector('.nav-label').textContent = labels[link.dataset.primaryLink];
+      if (link.dataset.primaryLink === current) link.setAttribute('aria-current','page');
+      else link.removeAttribute('aria-current');
+    }
+    const toggle = nav.querySelector('.primary-menu-toggle');
+    const open = compact.matches && nav.classList.contains('is-open');
+    toggle.setAttribute('aria-expanded',String(open));
+    toggle.querySelector('.nav-label').textContent = en ? (open ? 'Close menu' : 'Open menu') : (open ? '메뉴 닫기' : '메뉴 열기');
+    toggle.querySelector('.nav-icon').textContent = open ? 'close' : 'menu';
+    for (const section of document.querySelectorAll('#catalog,.browse-controls,.directory-sticky')) section.classList.toggle('site-section-hidden',current === 'guide');
+    document.getElementById('guide')?.classList.toggle('site-section-hidden',current !== 'guide');
+  }
+  function close() {
+    document.querySelector('.primary-navigation')?.classList.remove('is-open');
+    paint();
+  }
+  function init() {
+    const nav = document.querySelector('.primary-navigation');
+    if (!nav) return;
+    if (!nav.dataset.bound) {
+      nav.dataset.bound = 'true';
+      nav.querySelector('.primary-menu-toggle').addEventListener('click',() => {nav.classList.toggle('is-open');paint();});
+      nav.addEventListener('click',event => {if (event.target.closest('a')) close();});
+      nav.addEventListener('keydown',event => {
+        if (event.key === 'Escape' && nav.classList.contains('is-open')) {close();nav.querySelector('button').focus();}
+      });
+    }
+    close();
+  }
+  window.ringklInitNavigation = init;
+  document.addEventListener('llnk:viewchange',init);
+  document.addEventListener('llnk:preferences',paint);
+  window.addEventListener('hashchange',close);
+  window.addEventListener('popstate',close);
+  compact.addEventListener('change',close);
+  init();
+})();
+
 window.ringklInitReportForm = (pageBody, api, lang) => {
   const $ = id => pageBody.querySelector('#' + id);
   const form = $('reportForm');
@@ -1085,6 +1134,10 @@ function updateSettingsLabel() {
     visibleServices=list;
     $('serviceGrid').innerHTML=list.slice(0,state.visible).map(service=>card(service,ranks)).join('');
     $('emptyState').hidden=!!list.length;$('resultCount').textContent=list.length;
+    const catalogEmpty = services.length === 0;
+    $('emptyState').querySelector('h3').textContent = lang === 'en' ? (catalogEmpty ? 'No services have been listed yet.' : 'No services match these conditions.') : (catalogEmpty ? '아직 등록된 서비스가 없습니다.' : '조건에 맞는 서비스가 없어요.');
+    $('emptyState').querySelector('[data-reset]').hidden = catalogEmpty;
+    $('emptyState').querySelector('.icon').textContent = catalogEmpty ? 'inventory_2' : 'search_off';
     $('resultsTitle').firstChild.textContent=t(state.query || state.category!=='all' || Object.entries(state.filters).some(([key,value])=>key==='features'?value.length:value)?'results':'allServices')+' ';
     updatePagination();
     $('clearSearch').hidden=!state.query;

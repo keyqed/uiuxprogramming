@@ -58,7 +58,6 @@ input::placeholder{color:var(--muted);opacity:1}
     .result.show{display:flex}.result a{flex:1;min-width:0;color:var(--brand);font:700 13px/1.5 Consolas,monospace;word-break:break-all}.copy{display:grid;flex:0 0 40px;width:40px;height:40px;padding:0;place-items:center}.copy{--button-edge:var(--line);--button-face:var(--bg);--button-shadow:var(--line);color:var(--text)}.copy:hover:not(:disabled){--button-edge:var(--brand);--button-shadow:var(--brand);color:var(--brand)}
     .message{min-height:20px;color:var(--muted);font-size:12px;text-align:center}
     .message.is-error{color:var(--danger)}
-    .message.is-error::before{content:"[ ERROR ] ";color:var(--danger);font-weight:700}
     @keyframes llnk-panel-open{
       0%{opacity:0;transform:scaleX(.006) scaleY(.045);border-radius:999px;box-shadow:0 0 22px color-mix(in srgb,var(--brand) 64%,transparent)}
       12%{opacity:1}

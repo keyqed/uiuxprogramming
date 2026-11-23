@@ -7,15 +7,16 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 
   <link rel="stylesheet" href="../assets/directory.css?v=20261106-form2">
-<script src="../script.js?v=20261114-nav" defer></script>
+<script src="../script.js?v=20261123-accessibility" defer></script>
 <title>Shortener | LLNKKR</title><meta name="description" content="로그인, 요금, 광고 조건을 비교하고 나에게 맞는 단축링크 서비스를 찾아보세요.">
 
   <link rel="icon" href="../assets/llnkkr.png">
 
-  <link rel="stylesheet" href="../assets/navigation.css?v=20261114">
+  <link rel="stylesheet" href="../assets/navigation.css?v=20261120-accessibility">
 </head>
 
 <body data-page="directory">
+<a class="skip-link" href="#directoryMain">본문으로 건너뛰기</a>
 
 <div class="directory-chrome">
 
@@ -23,7 +24,7 @@
 
   <a class="brand" data-page-link href="../" aria-label="링클 홈"><img src="../assets/llnkkr-wordmark.svg" alt="LLNKKR"></a>
 
-  <div class="header-search"><div class="search-field ringcl-box"><span class="icon" aria-hidden="true">search</span><input id="serviceSearch" type="search" name="service-query" placeholder="Bitly, tinyurl.com, API…" aria-label="서비스 이름이나 도메인 검색" maxlength="80" autocomplete="off" autocapitalize="none" spellcheck="false"><button type="button" class="clear-search icon-button" id="clearSearch" aria-label="검색어 지우기" hidden><span class="icon" aria-hidden="true">close</span></button><kbd>/</kbd></div><button type="button" id="filterToggle" class="icon-button" data-dialog="filterDialog" aria-label="필터" title="필터"><span class="icon" aria-hidden="true">tune</span><span id="filterCount" class="count-badge" hidden></span></button></div>
+  <div class="header-search"><div class="search-field ringcl-box"><span class="icon" aria-hidden="true">search</span><label class="visually-hidden" for="serviceSearch">서비스 이름이나 도메인 검색</label><input id="serviceSearch" type="search" name="service-query" placeholder="Bitly, tinyurl.com, API…" maxlength="80" autocomplete="off" autocapitalize="none" spellcheck="false"><button type="button" class="clear-search icon-button" id="clearSearch" aria-label="검색어 지우기" hidden><span class="icon" aria-hidden="true">close</span></button><kbd>/</kbd></div><button type="button" id="filterToggle" class="icon-button" data-dialog="filterDialog" aria-label="필터" title="필터"><span class="icon" aria-hidden="true">tune</span><span id="filterCount" class="count-badge" hidden></span></button></div>
 
   <nav class="header-actions" aria-label="서비스 디렉터리"><button class="icon-button" id="themeToggle" type="button" aria-label="다크 모드" title="다크 모드"><span class="icon" aria-hidden="true">dark_mode</span></button><button class="icon-button" data-dialog="languageDialog" type="button" aria-label="언어" title="언어"><span class="icon" aria-hidden="true">language</span></button><button class="icon-button" aria-label="서비스 제보 / 정보 수정" title="서비스 제보 / 정보 수정" data-dialog="reportDialog" type="button"><span class="icon" aria-hidden="true">add</span></button></nav>
 
@@ -33,6 +34,10 @@
 <ul id="primaryMenu"><li><a data-primary-link="create" href="../#create"><span class="nav-icon" aria-hidden="true">link</span><span class="nav-label">링크 만들기</span></a></li><li><a data-primary-link="catalog" href="#catalog" aria-current="page"><span class="nav-icon" aria-hidden="true">travel_explore</span><span class="nav-label">서비스 찾기</span></a></li><li><a data-primary-link="guide" href="#guide"><span class="nav-icon" aria-hidden="true">info</span><span class="nav-label">이용 안내</span></a></li></ul>
 </nav>
 </header>
+
+</div>
+
+<main id="directoryMain" tabindex="-1">
 
 <div class="directory-controls">
 
@@ -81,10 +86,6 @@
 </div>
 
 </div>
-
-</div>
-
-<main>
 
   <section id="catalog" class="results" aria-labelledby="resultsTitle">
 

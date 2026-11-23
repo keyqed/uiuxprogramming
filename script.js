@@ -31,13 +31,27 @@
     if (!nav.dataset.bound) {
       nav.dataset.bound = 'true';
       nav.querySelector('.primary-menu-toggle').addEventListener('click',() => {nav.classList.toggle('is-open');paint();});
-      nav.addEventListener('click',event => {if (event.target.closest('a')) close();});
+      nav.addEventListener('click', event => {
+        if (!event.target.closest('a')) return;
+        const menuWasOpen = compact.matches && nav.classList.contains('is-open');
+        close();
+        if (menuWasOpen) nav.querySelector('.primary-menu-toggle').focus({preventScroll:true});
+      });
       nav.addEventListener('keydown',event => {
         if (event.key === 'Escape' && nav.classList.contains('is-open')) {close();nav.querySelector('button').focus();}
       });
     }
     close();
   }
+  document.addEventListener('click', event => {
+    const skipLink = event.target.closest('.skip-link');
+    if (!skipLink) return;
+    const main = document.querySelector(skipLink.hash);
+    if (!main) return;
+    event.preventDefault();
+    main.focus();
+    if (document.body.dataset.page === 'directory') main.scrollIntoView();
+  });
   window.ringklInitNavigation = init;
   document.addEventListener('llnk:viewchange',init);
   document.addEventListener('llnk:preferences',paint);
@@ -627,7 +641,11 @@ function updateSettingsLabel() {
   }
   function setMessage(value, isError = false) {
     lastMessage = {value, isError};
-    message.textContent = value === 'retryAfter' ? t(value).replace('{seconds}', String(Math.max(1, Math.ceil((retryUntil - Date.now()) / 1000)))) : translatedMessage(value);
+    const content = value === 'retryAfter'
+      ? t(value).replace('{seconds}', String(Math.max(1, Math.ceil((retryUntil - Date.now()) / 1000))))
+      : translatedMessage(value);
+    const errorPrefix = language === 'ko' ? '오류: ' : 'Error: ';
+    message.textContent = content && isError ? errorPrefix + content : content;
     input.setAttribute('aria-invalid', String(Boolean(value) && isError && ['errorEmpty', 'errorUrl', 'errorScheme', 'errorLength', 'errorCredentials'].includes(value)));
     message.classList.toggle('is-error', Boolean(value) && isError);
   }
@@ -761,6 +779,7 @@ function updateSettingsLabel() {
     reviewDialog.close('confirm');
     reviewSnapshot = null;
     setMessage('processing');
+    message.focus({preventScroll:true});
     const version = requestVersion;
     const controller = new AbortController();
     activeRequest = controller;
@@ -811,6 +830,10 @@ function updateSettingsLabel() {
       if (version === requestVersion) {
         activeRequest = null;
         setBusy(false);
+        if (document.activeElement === message) {
+          const nextControl = result.classList.contains('show') ? copy : input;
+          nextControl.focus();
+        }
       }
     }
   });

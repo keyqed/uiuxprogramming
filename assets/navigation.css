@@ -30,3 +30,49 @@ body[data-page=home]>.support-notice{top:90px}
  .service-guide h1{font-size:23px}
 }
 @media(prefers-reduced-motion:reduce){.primary-navigation a,.primary-navigation .primary-menu-toggle{transition:none}}
+
+.visually-hidden {
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+
+.skip-link {
+  position:fixed;
+  z-index:1000;
+  inset-block-start:12px;
+  inset-inline-start:12px;
+  transform:translateY(calc(-100% - 20px));
+  padding:10px 14px;
+  border:2px solid var(--text);
+  border-radius:6px;
+  background:var(--bg);
+  color:var(--text);
+  font-weight:700;
+}
+
+.skip-link:focus {transform:none}
+.url-field-label {justify-self:start;color:var(--text);font-size:14px;font-weight:700}
+
+body :is(a[href],button,input,select,textarea,summary,[tabindex="0"]):focus-visible {
+  outline:3px solid var(--text);
+  outline-offset:3px;
+}
+
+.primary-navigation a[aria-current="page"] .nav-label,
+.category-tabs button[aria-pressed="true"] {
+  text-decoration:underline;
+  text-underline-offset:4px;
+  text-decoration-thickness:2px;
+}
+
+:root[data-theme="light"] .directory-chrome,
+:root[data-theme="light"] #directoryMain {
+  --muted:#4D5360;
+}
+
+:root[data-theme="light"] body[data-page="home"] #message.is-error {color:#9A203C}
